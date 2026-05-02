@@ -69,7 +69,7 @@ def create_vector_embedding():
         st.success("Vector Database Created Successfully!")
 
 # ---------------- UI ----------------
-st.title("📄 PDF Chatbot using Groq + LangChain")
+st.title("Document Intelligence Assistant (RAG-based)")
 
 # Auto create vector DB (safe approach)
 if "vectors" not in st.session_state:
@@ -105,7 +105,7 @@ if user_prompt:
     st.write(f"⏱ Response time: {time.process_time() - start:.2f}s")
 
     # ---------------- SOURCE DOCS ----------------
-    with st.expander("📚 Source Documents"):
+    with st.expander(" Source Documents"):
         for doc in response["context"]:
             st.write(doc.page_content)
             st.write("---")
