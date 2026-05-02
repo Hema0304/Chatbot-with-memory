@@ -34,5 +34,8 @@ User Input → LangGraph State → Memory Store → LLM → Context-Aware Respon
 ## 🔗 Live Demo
 [Live Demo](https://chatbot-with-memory-isvzvujrdlwkuulqmjehp4.streamlit.app/)
 
+##Screenshot
+![Screenshot](screenshot.png)
+
 
 
