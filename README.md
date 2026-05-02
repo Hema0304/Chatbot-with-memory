@@ -36,7 +36,7 @@ User Input → LangGraph State → Memory Store → LLM → Context-Aware Respon
 
 ##Screenshot
 
-![Screenshot](screenshot.png)
+![Screenshot](chatbot-groq/screenshot.png)
 
 
 
