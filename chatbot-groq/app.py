@@ -69,7 +69,7 @@ def create_vector_embedding():
         st.success("Vector Database Created Successfully!")
 
 # ---------------- UI ----------------
-st.title("Document Intelligence Assistant (RAG-based)")
+st.title("Context-Aware Conversational Agent with Memory")
 
 # Auto create vector DB (safe approach)
 if "vectors" not in st.session_state:
