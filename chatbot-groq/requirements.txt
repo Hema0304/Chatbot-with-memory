@@ -1,30 +1,18 @@
 
 python-dotenv
-ipykernel
-faiss-cpu
-pypdf
 streamlit
-langchain-groq
-langchain-text-splitters
-langchain_chroma
-langchain
-langchain-core 
-langchain-community
-bs4
-arxiv
-pymupdf
-wikipedia
-chromadb
-sentence_transformers
-langchain_huggingface
-duckdb
-pandas
-mysql-connector-python
-SQLAlchemy
-validators==0.28.1
-youtube_transcript_api
-unstructured
-pytube
-numexpr
 
+langchain==0.2.14
+langchain-community==0.2.12
+langchain-core==0.2.38
+
+chromadb==0.4.24
+faiss-cpu
+
+pypdf
+sentence-transformers
+
+langchain-groq
+
+protobuf==4.25.3
 
