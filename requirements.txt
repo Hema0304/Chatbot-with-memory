@@ -26,5 +26,9 @@ youtube_transcript_api
 unstructured
 pytube
 numexpr
+torch
+torchvision
+sentence-transformers
+transformers
 
 
