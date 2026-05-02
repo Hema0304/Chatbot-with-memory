@@ -16,6 +16,7 @@ from langchain_community.document_loaders import PyPDFDirectoryLoader
 from dotenv import load_dotenv
 load_dotenv()
 
+# ---------------- LLM ----------------
 groq_api_key = os.getenv("GROQ_API_KEY")
 
 llm = ChatGroq(
@@ -23,8 +24,9 @@ llm = ChatGroq(
     model_name="llama-3.1-8b-instant"
 )
 
+# ---------------- PROMPT ----------------
 prompt = ChatPromptTemplate.from_template("""
-Answer the questions based only on the provided context.
+Answer the question using only the context below.
 
 <context>
 {context}
@@ -32,6 +34,8 @@ Answer the questions based only on the provided context.
 
 Question: {input}
 """)
+
+# ---------------- VECTOR DB FUNCTION ----------------
 def create_vector_embedding():
     if "vectors" not in st.session_state:
 
@@ -39,11 +43,11 @@ def create_vector_embedding():
             model_name="all-MiniLM-L6-v2"
         )
 
-        st.session_state.loader = PyPDFDirectoryLoader("research_papers")
-        st.session_state.docs = st.session_state.loader.load()
+        loader = PyPDFDirectoryLoader("research_papers")
+        docs = loader.load()
 
-        if not st.session_state.docs:
-            st.error("No PDF files found in research_papers folder")
+        if not docs:
+            st.error("No PDF files found in 'research_papers' folder.")
             return
 
         splitter = RecursiveCharacterTextSplitter(
@@ -51,55 +55,60 @@ def create_vector_embedding():
             chunk_overlap=200
         )
 
-        st.session_state.final_documents = splitter.split_documents(
-            st.session_state.docs
-        )
+        final_docs = splitter.split_documents(docs)
 
-        if not st.session_state.final_documents:
-            st.error("No text extracted from documents")
+        if not final_docs:
+            st.error("Failed to split documents.")
             return
 
         st.session_state.vectors = FAISS.from_documents(
-            st.session_state.final_documents,
+            final_docs,
             st.session_state.embeddings
         )
 
-        st.success("Vector DB created successfully!")
+        st.success("Vector Database Created Successfully!")
 
-user_prompt = st.text_input("Enter your query from the document")
+# ---------------- UI ----------------
+st.title("📄 PDF Chatbot using Groq + LangChain")
 
-if st.button("Document Embedding"):
-    create_vector_embedding()
+# Auto create vector DB (safe approach)
+if "vectors" not in st.session_state:
+    if st.button("Create Vector Database"):
+        create_vector_embedding()
 
+# Query input
+user_prompt = st.text_input("Ask a question from your PDF")
 
+# ---------------- CHAT LOGIC ----------------
 if user_prompt:
 
     if "vectors" not in st.session_state:
-        st.error("Please create vector database first!")
-    else:
-        document_chain = create_stuff_documents_chain(llm, prompt)
+        st.warning("Please create vector database first!")
+        st.stop()
 
-        retriever = st.session_state.vectors.as_retriever()
+    document_chain = create_stuff_documents_chain(llm, prompt)
 
-        retrieval_chain = create_retrieval_chain(
-            retriever,
-            document_chain
-        )
+    retriever = st.session_state.vectors.as_retriever()
 
-        start = time.process_time()
+    retrieval_chain = create_retrieval_chain(
+        retriever,
+        document_chain
+    )
 
-        response = retrieval_chain.invoke({"input": user_prompt})
+    start = time.process_time()
 
-        st.write(response["answer"])
+    response = retrieval_chain.invoke({"input": user_prompt})
 
-        st.write(f"Response time: {time.process_time() - start}")
+    st.write("### Answer:")
+    st.write(response["answer"])
 
-        with st.expander("Document similarity search"):
-            for doc in response["context"]:
-                st.write(doc.page_content)
-                st.write("------")
+    st.write(f"⏱ Response time: {time.process_time() - start:.2f}s")
 
-
+    # ---------------- SOURCE DOCS ----------------
+    with st.expander("📚 Source Documents"):
+        for doc in response["context"]:
+            st.write(doc.page_content)
+            st.write("---")
 
 
 
