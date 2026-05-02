@@ -16,7 +16,7 @@ from langchain_community.document_loaders import PyPDFDirectoryLoader
 from dotenv import load_dotenv
 load_dotenv()
 
-os.environ["GROQ_API_KEY"]=os.getenv("GROQ_API_KEY")
+
 
 groq_api_key = os.getenv("GROQ_API_KEY")
 
